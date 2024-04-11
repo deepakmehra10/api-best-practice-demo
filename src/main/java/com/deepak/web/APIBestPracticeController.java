@@ -1,19 +1,26 @@
 package com.deepak.web;
 
 import com.deepak.model.Product;
+import com.deepak.service.APIBestPracticeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/api/v1")
 public class APIBestPracticeController {
+
+    @Autowired
+    private APIBestPracticeService apiBestPracticeService;
 
     @Operation(summary = "Get all the products.")
     @ApiResponses(value = {
@@ -22,9 +29,11 @@ public class APIBestPracticeController {
             @ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
             @ApiResponse(responseCode = "404", description = "Book not found", content = @Content)})
     @GetMapping("/products")
-    public List<Product> getProducts() {
-        return Arrays.asList(Product.builder().id(1).name("Ultraboost M1").price(17999.0).description("Running Shoes").category("Shoes").build(),
-                Product.builder().id(2).name("Cap Adidas").price(1299.0).description("Casual Cap").category("Cap").build());
+    public ResponseEntity<List<Product>> getProducts(@RequestParam(required = false) Integer page,
+                                     @RequestParam(required = false) Integer size,
+                                     @RequestParam(required = false) String[] orderBy) {
+        return ResponseEntity.ok().body(apiBestPracticeService.products(Optional.ofNullable(page),
+                Optional.ofNullable(size), orderBy));
     }
 
     @Operation(summary = "Get a product by it's id.")
@@ -34,8 +43,8 @@ public class APIBestPracticeController {
             @ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
             @ApiResponse(responseCode = "404", description = "Product not found", content = @Content)})
     @GetMapping("/products/{id}")
-    public Product getProductById(@PathVariable String id) {
-        return null;
+    public ResponseEntity<Product> getProductById(@PathVariable Integer id) {
+        return ResponseEntity.ok().body(apiBestPracticeService.getProductById(id));
     }
 
     @Operation(summary = "Create a product")
@@ -43,9 +52,9 @@ public class APIBestPracticeController {
             @ApiResponse(responseCode = "201", description = "Created a product",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))}),
             @ApiResponse(responseCode = "409", description = "Product already present.", content = @Content)})
-    @PostMapping
-    public Product createProduct() {
-        return null;
+    @PostMapping("/products")
+    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(apiBestPracticeService.createProduct(product));
     }
 
     @Operation(summary = "Delete a product by it's id.")
@@ -54,9 +63,10 @@ public class APIBestPracticeController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))}),
             @ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
             @ApiResponse(responseCode = "404", description = "Product not found", content = @Content)})
-    @DeleteMapping
-    public Product deleteProduct() {
-        return null;
+    @DeleteMapping("/products/{id}")
+    public ResponseEntity<String> deleteProduct(@PathVariable Integer id) {
+        apiBestPracticeService.deleteProductById(id);
+        return ResponseEntity.ok().body("Successfully deleted the product with Id: " + id);
     }
 
     @Operation(summary = "Update a product")
@@ -66,11 +76,12 @@ public class APIBestPracticeController {
             @ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
             @ApiResponse(responseCode = "404", description = "Product not found", content = @Content)})
 
-    @PutMapping
-    public Product updateProduct(){
-        return null;
+    @PutMapping("/products")
+    public ResponseEntity<Product> updateProduct(@RequestBody Product product){
+        return ResponseEntity.ok().body(apiBestPracticeService.updateProduct(product));
     }
 
+    // :TODO - Add a logic for this
     @Operation(summary = "Patch a product by its id.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found the book",

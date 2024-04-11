@@ -1,14 +1,18 @@
 package com.deepak.model;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity(name = "products")
 @Getter
 @Builder
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class Product {
+    @Id
     Integer id;
     String name;
     String description;
