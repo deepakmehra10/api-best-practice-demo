@@ -1,5 +1,6 @@
 package com.deepak.service;
 
+import com.deepak.exception.ProductNotFoundException;
 import com.deepak.model.Product;
 import com.deepak.repository.APIBestPracticeRepository;
 import org.springframework.data.domain.PageRequest;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.UnaryOperator;
 
 @Service
 public class APIBestPracticeServiceImpl implements APIBestPracticeService {
@@ -35,12 +37,14 @@ public class APIBestPracticeServiceImpl implements APIBestPracticeService {
 
     @Override
     public Product createProduct(Product product) {
+        apiBestPracticeRepository.findById(product.getId());
         return apiBestPracticeRepository.save(product);
     }
 
     @Override
     public Product getProductById(Integer id) {
-        return apiBestPracticeRepository.findById(id).orElseThrow(() -> new RuntimeException("Product with this user id not found!"));
+        UnaryOperator<String> message = value -> "Product with id " + value + " was not found.";
+        return apiBestPracticeRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(message.apply(String.valueOf(id))));
     }
 
     @Override
