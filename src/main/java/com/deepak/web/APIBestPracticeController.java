@@ -1,5 +1,6 @@
 package com.deepak.web;
 
+import com.deepak.annotation.CustomFilter;
 import com.deepak.model.Product;
 import com.deepak.service.APIBestPracticeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -29,11 +31,15 @@ public class APIBestPracticeController {
             @ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
             @ApiResponse(responseCode = "404", description = "Book not found", content = @Content)})
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getProducts(@RequestParam(required = false) Integer page,
-                                     @RequestParam(required = false) Integer size,
-                                     @RequestParam(required = false) String[] orderBy) {
-        return ResponseEntity.ok().body(apiBestPracticeService.products(Optional.ofNullable(page),
-                Optional.ofNullable(size), orderBy));
+    @CustomFilter(value = "filterName")
+    public ResponseEntity<List<Product>> getProducts(@RequestParam(defaultValue = "0") Integer page,
+                                                     @RequestParam(defaultValue = "10") Integer size,
+                                                     @RequestParam(required = false) String[] orderBy,
+                                                     @RequestParam(required = false) Map<String, String> filter) {
+
+        List<Product> products = apiBestPracticeService.products(Optional.ofNullable(page),
+                Optional.ofNullable(size), orderBy, filter);
+        return ResponseEntity.ok().body(products);
     }
 
     @Operation(summary = "Get a product by it's id.")
@@ -81,16 +87,15 @@ public class APIBestPracticeController {
         return ResponseEntity.ok().body(apiBestPracticeService.updateProduct(product));
     }
 
-    // :TODO - Add a logic for this
     @Operation(summary = "Patch a product by its id.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found the book",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))}),
             @ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
             @ApiResponse(responseCode = "404", description = "Product not found", content = @Content)})
-    @PatchMapping
-    public Product patchProduct() {
-        return null;
+    @PatchMapping("/products")
+    public ResponseEntity<Product> patchProduct(@RequestBody Product product) {
+        return ResponseEntity.ok().body(apiBestPracticeService.updateProduct(product));
     }
 
 }

@@ -19,7 +19,6 @@ public class OpenAPIConfig {
 
     @Bean
     public OpenAPI myOpenAPI() {
-        System.out.println("I am inside OPEN API" + appVersion);
         Server devServer = new Server();
         devServer.setUrl("localhost:9000");
         devServer.setDescription("Server URL in Development environment");
