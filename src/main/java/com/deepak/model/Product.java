@@ -1,8 +1,11 @@
 package com.deepak.model;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -13,6 +16,7 @@ import javax.persistence.Id;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public class Product {
     @Id
     Integer id;
