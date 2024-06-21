@@ -5,5 +5,3 @@ INSERT INTO products (id, name, description, price, category) VALUES (4, 'Ultrab
 INSERT INTO products (id, name, description, price, category) VALUES (5, 'Ultraboost L1', 'Running Shoes', 1299.0,'Shoes');
 INSERT INTO products (id, name, description, price, category) VALUES (6, 'Y-3 T-Shirt', 'T-Shirt', 12999.0,'Shoes');
 INSERT INTO products (id, name, description, price, category) VALUES (7, 'Star War Socks', 'Socks', 799.0,'Apparel');
-
-
