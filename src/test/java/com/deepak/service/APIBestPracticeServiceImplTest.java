@@ -190,9 +190,7 @@ public class APIBestPracticeServiceImplTest {
 
         Mockito.when(apiBestPracticeRepository.findById(productToBeUpdated.getId())).thenReturn(Optional.ofNullable(existingProduct));
         Mockito.when(apiBestPracticeRepository.save(productToBeUpdated)).thenReturn(productToBeUpdated);
-        System.out.println(productToBeUpdated.hashCode() + "test case me");
         Product actualResult = apiBestPracticeService.updateProduct(productToBeUpdated);
-        System.out.println(actualResult);
         assertThat(actualResult.getId(), is(equalTo(1)));
         assertThat(actualResult.getName(), is(equalTo("Ultraboost1")));
         assertThat(actualResult.getCategory(), is(equalTo("Shoes")));

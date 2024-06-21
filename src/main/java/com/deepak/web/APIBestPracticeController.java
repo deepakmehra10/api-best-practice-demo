@@ -1,6 +1,5 @@
 package com.deepak.web;
 
-import com.deepak.annotation.CustomFilter;
 import com.deepak.model.Product;
 import com.deepak.service.APIBestPracticeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,7 +30,6 @@ public class APIBestPracticeController {
             @ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
             @ApiResponse(responseCode = "404", description = "Book not found", content = @Content)})
     @GetMapping("/products")
-    @CustomFilter(value = "filterName")
     public ResponseEntity<List<Product>> getProducts(@RequestParam(defaultValue = "0") Integer page,
                                                      @RequestParam(defaultValue = "10") Integer size,
                                                      @RequestParam(required = false) String[] orderBy,

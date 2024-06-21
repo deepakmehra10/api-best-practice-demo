@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = NoHandlerFoundException.class)
     public ResponseEntity<ErrorResponse> handleNoHandlerFoundException(NoHandlerFoundException noHandlerFoundException,
-                                                                            HttpServletRequest httpServletRequest) {
+                                                                       HttpServletRequest httpServletRequest) {
         String error = "NOT_FOUND";
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .error(error)
